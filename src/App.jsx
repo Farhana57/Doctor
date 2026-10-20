@@ -1,34 +1,94 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 
-// --- Shared Navbar ---
+// --- Shared Navbar with Responsive Toggle Menu ---
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path 
     ? 'text-[#6355E8] font-bold border-b-2 border-[#6355E8]' 
     : 'text-gray-600 hover:text-[#6355E8]';
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
-    <nav className="flex items-center justify-between px-8 py-4 bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 shadow-sm transition-all">
-      <Link to="/" className="flex items-center space-x-2 group">
-        <div className="w-9 h-9 rounded-full bg-[#6355E8] flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform duration-300">D</div>
-        <span className="text-xl font-bold text-gray-900 tracking-tight">Doctify</span>
-      </Link>
-      <ul className="hidden md:flex space-x-7 text-sm font-medium">
-        <li><Link to="/" className={`pb-1 transition-colors duration-300 ${isActive('/')}`}>Home</Link></li>
-        <li><Link to="/about" className={`pb-1 transition-colors duration-300 ${isActive('/about')}`}>About</Link></li>
-        <li><Link to="/services" className={`pb-1 transition-colors duration-300 ${isActive('/services')}`}>Services</Link></li>
-        <li><Link to="/doctors" className={`pb-1 transition-colors duration-300 ${isActive('/doctors')}`}>Doctors</Link></li>
-        <li><Link to="/appointments" className={`pb-1 transition-colors duration-300 ${isActive('/appointments')}`}>Appointments</Link></li>
-        <li><Link to="/blog" className={`pb-1 transition-colors duration-300 ${isActive('/blog')}`}>Blog</Link></li>
-        <li><Link to="/contact" className={`pb-1 transition-colors duration-300 ${isActive('/contact')}`}>Contact</Link></li>
-      </ul>
-      <div className="flex items-center space-x-3">
-        <button onClick={() => navigate('/signup')} className="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all duration-300">Sign up</button>
-        <button onClick={() => navigate('/login')} className="px-6 py-2 text-sm font-medium text-white bg-black rounded-full hover:bg-[#6355E8] hover:scale-105 active:scale-95 transition-all duration-300 shadow-md">Login</button>
+    <nav className="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 shadow-sm transition-all">
+      <div className="flex items-center justify-between px-6 md:px-8 py-4 max-w-7xl mx-auto">
+        
+        {/* Logo */}
+        <Link to="/" onClick={closeMenu} className="flex items-center space-x-2 group">
+          <div className="w-9 h-9 rounded-full bg-[#6355E8] flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform duration-300">D</div>
+          <span className="text-xl font-bold text-gray-900 tracking-tight">Doctify</span>
+        </Link>
+
+        {/* Desktop Navigation Links */}
+        <ul className="hidden lg:flex space-x-7 text-sm font-medium">
+          <li><Link to="/" className={`pb-1 transition-colors duration-300 ${isActive('/')}`}>Home</Link></li>
+          <li><Link to="/about" className={`pb-1 transition-colors duration-300 ${isActive('/about')}`}>About</Link></li>
+          <li><Link to="/services" className={`pb-1 transition-colors duration-300 ${isActive('/services')}`}>Services</Link></li>
+          <li><Link to="/doctors" className={`pb-1 transition-colors duration-300 ${isActive('/doctors')}`}>Doctors</Link></li>
+          <li><Link to="/appointments" className={`pb-1 transition-colors duration-300 ${isActive('/appointments')}`}>Appointments</Link></li>
+          <li><Link to="/blog" className={`pb-1 transition-colors duration-300 ${isActive('/blog')}`}>Blog</Link></li>
+          <li><Link to="/contact" className={`pb-1 transition-colors duration-300 ${isActive('/contact')}`}>Contact</Link></li>
+        </ul>
+
+        {/* Desktop Buttons */}
+        <div className="hidden lg:flex items-center space-x-3">
+          <button onClick={() => navigate('/signup')} className="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all duration-300">Sign up</button>
+          <button onClick={() => navigate('/login')} className="px-6 py-2 text-sm font-medium text-white bg-black rounded-full hover:bg-[#6355E8] hover:scale-105 active:scale-95 transition-all duration-300 shadow-md">Login</button>
+        </div>
+
+        {/* Mobile / Tablet Toggle Hamburger Button */}
+        <button 
+          onClick={toggleMenu}
+          className="lg:hidden p-2 rounded-lg text-gray-600 hover:text-[#6355E8] hover:bg-gray-100 focus:outline-none transition-colors"
+          aria-label="Toggle Menu"
+        >
+          {isMenuOpen ? (
+            /* Close Icon (X) */
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ) : (
+            /* Hamburger Icon */
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          )}
+        </button>
       </div>
+
+      {/* Mobile Dropdown Menu */}
+      {isMenuOpen && (
+        <div className="lg:hidden bg-white border-b border-gray-100 px-6 py-4 shadow-lg animate-fadeIn">
+          <ul className="flex flex-col space-y-4 text-sm font-medium">
+            <li><Link to="/" onClick={closeMenu} className={`block ${isActive('/')}`}>Home</Link></li>
+            <li><Link to="/about" onClick={closeMenu} className={`block ${isActive('/about')}`}>About</Link></li>
+            <li><Link to="/services" onClick={closeMenu} className={`block ${isActive('/services')}`}>Services</Link></li>
+            <li><Link to="/doctors" onClick={closeMenu} className={`block ${isActive('/doctors')}`}>Doctors</Link></li>
+            <li><Link to="/appointments" onClick={closeMenu} className={`block ${isActive('/appointments')}`}>Appointments</Link></li>
+            <li><Link to="/blog" onClick={closeMenu} className={`block ${isActive('/blog')}`}>Blog</Link></li>
+            <li><Link to="/contact" onClick={closeMenu} className={`block ${isActive('/contact')}`}>Contact</Link></li>
+          </ul>
+          <div className="flex flex-col space-y-2 mt-5 pt-4 border-t border-gray-100">
+            <button 
+              onClick={() => { navigate('/signup'); closeMenu(); }} 
+              className="w-full py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition"
+            >
+              Sign up
+            </button>
+            <button 
+              onClick={() => { navigate('/login'); closeMenu(); }} 
+              className="w-full py-2.5 text-sm font-medium text-white bg-black rounded-full hover:bg-[#6355E8] transition shadow-md"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
@@ -80,13 +140,15 @@ const Footer = () => (
   </footer>
 );
 
+// --- REUSABLE SECTIONS FOR HOME & OTHER PAGES ---
+
 // Hero Section
 const HeroSection = () => {
   const navigate = useNavigate();
   return (
-    <section className="px-8 py-8 max-w-7xl mx-auto pt-6 animate-fadeIn">
+    <section className="px-6 md:px-8 py-8 max-w-7xl mx-auto pt-6 animate-fadeIn">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-5 bg-gradient-to-br from-purple-100/80 via-indigo-50/60 to-amber-50/70 p-8 rounded-3xl flex flex-col justify-between shadow-sm border border-white hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
+        <div className="lg:col-span-5 bg-gradient-to-br from-purple-100/80 via-indigo-50/60 to-amber-50/70 p-6 md:p-8 rounded-3xl flex flex-col justify-between shadow-sm border border-white hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1">
           <div className="animate-slideRight">
             <span className="inline-block px-3.5 py-1 bg-purple-200/80 text-purple-900 text-xs font-semibold rounded-full mb-4 animate-pulse">
               24/7 Services Available
@@ -130,7 +192,7 @@ const HeroSection = () => {
         </div>
 
         <div className="lg:col-span-7 bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-center overflow-hidden group">
-          <div className="overflow-hidden rounded-2xl w-full h-[440px]">
+          <div className="overflow-hidden rounded-2xl w-full h-[320px] md:h-[440px]">
             <img 
               src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=1000&q=80" 
               alt="Doctors" 
@@ -145,10 +207,10 @@ const HeroSection = () => {
 
 // About Section
 const AboutSection = () => (
-  <section className="px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500">
+  <section className="px-6 md:px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500">
       <div className="lg:col-span-5 overflow-hidden rounded-2xl group">
-        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80" alt="Healthcare team" className="rounded-2xl w-full h-[360px] object-cover group-hover:scale-110 transition-transform duration-700" />
+        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80" alt="Healthcare team" className="rounded-2xl w-full h-[300px] md:h-[360px] object-cover group-hover:scale-110 transition-transform duration-700" />
       </div>
       <div className="lg:col-span-7 space-y-4">
         <span className="text-[#6355E8] font-bold text-xs uppercase tracking-wider">About Doctify</span>
@@ -177,7 +239,7 @@ const AboutSection = () => (
 
 // Services Section
 const ServicesSection = () => (
-  <section className="px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
+  <section className="px-6 md:px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
     <div className="text-center mb-10">
       <span className="text-[#6355E8] font-bold text-xs uppercase tracking-wider">Our Services</span>
       <h2 className="text-3xl font-extrabold text-gray-900 mt-1">Medical Support for Every Need</h2>
@@ -222,7 +284,7 @@ const ServicesSection = () => (
 const DoctorsSection = () => {
   const navigate = useNavigate();
   return (
-    <section className="px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
+    <section className="px-6 md:px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
       <div className="text-center mb-10">
         <span className="text-[#6355E8] font-bold text-xs uppercase tracking-wider">Our Medical Team</span>
         <h2 className="text-3xl font-extrabold text-gray-900 mt-1">Meet Our Certified Doctors</h2>
@@ -233,7 +295,7 @@ const DoctorsSection = () => {
         {[
           { name: 'Dr. Sarah Jenkins', role: 'Cardiologist Specialist', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=500&q=80' },
           { name: 'Dr. Michael Chen', role: 'Pediatrician Specialist', img: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=500&q=80' },
-          { name: 'Dr. Emily Watson', role: 'Neurologist Specialist', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D' },
+          { name: 'Dr. Emily Watson', role: 'Neurologist Specialist', img: 'https://images.unsplash.com/photo-1594824813566-788530791f4d?auto=format&fit=crop&w=500&q=80' },
         ].map((doc, idx) => (
           <div key={idx} className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 text-center hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 group">
             <div className="overflow-hidden rounded-2xl mb-4 h-52">
@@ -254,15 +316,15 @@ const DoctorsSection = () => {
 
 // Appointments Section
 const AppointmentsSection = () => (
-  <section className="px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
-    <div className="bg-[#6355E8] text-white p-10 rounded-3xl shadow-xl relative overflow-hidden">
+  <section className="px-6 md:px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
+    <div className="bg-[#6355E8] text-white p-6 md:p-10 rounded-3xl shadow-xl relative overflow-hidden">
       <div className="max-w-xl mx-auto text-center mb-8">
         <span className="inline-block px-3 py-1 bg-white/20 text-xs font-semibold rounded-full mb-3">Quick Booking</span>
-        <h2 className="text-3xl font-extrabold">Book Your Appointment Instantly</h2>
+        <h2 className="text-2xl md:text-3xl font-extrabold">Book Your Appointment Instantly</h2>
         <p className="text-indigo-100 text-xs mt-2">Fill out the form below to schedule your consultation with certified doctors.</p>
       </div>
 
-      <form onSubmit={(e) => e.preventDefault()} className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 bg-white/10 p-6 rounded-2xl backdrop-blur-md">
+      <form onSubmit={(e) => e.preventDefault()} className="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 bg-white/10 p-4 md:p-6 rounded-2xl backdrop-blur-md">
         <input type="text" placeholder="Your Full Name" className="w-full p-3.5 rounded-xl bg-white text-gray-800 text-xs outline-none focus:ring-2 focus:ring-purple-300 transition-all" />
         <input type="email" placeholder="Email Address" className="w-full p-3.5 rounded-xl bg-white text-gray-800 text-xs outline-none focus:ring-2 focus:ring-purple-300 transition-all" />
         <select className="w-full p-3.5 rounded-xl bg-white text-gray-700 text-xs outline-none focus:ring-2 focus:ring-purple-300 transition-all">
@@ -282,7 +344,7 @@ const AppointmentsSection = () => (
 
 // Testimonials Section
 const TestimonialsSection = () => (
-  <section className="px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
+  <section className="px-6 md:px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
     <div className="text-center mb-10">
       <span className="text-[#6355E8] font-bold text-xs uppercase tracking-wider">Testimonials</span>
       <h2 className="text-3xl font-extrabold text-gray-900 mt-1">Patients Love Doctify</h2>
@@ -317,7 +379,7 @@ const TestimonialsSection = () => (
 
 // Blog Section
 const BlogSection = () => (
-  <section className="px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
+  <section className="px-6 md:px-8 py-12 max-w-7xl mx-auto animate-fadeIn">
     <div className="text-center mb-10">
       <span className="text-[#6355E8] font-bold text-xs uppercase tracking-wider">Health Articles</span>
       <h2 className="text-3xl font-extrabold text-gray-900 mt-1">Latest Health News & Blog</h2>
@@ -346,7 +408,7 @@ const BlogSection = () => (
   </section>
 );
 
-// --- FULL HOME PAGE (HAS ALL SECTIONS) ---
+// --- FULL HOME PAGE ---
 const HomePage = () => (
   <div className="animate-fadeIn">
     <HeroSection />
@@ -359,10 +421,10 @@ const HomePage = () => (
   </div>
 );
 
-// --- SEPARATE PAGES FOR ROUTING ---
+// --- SEPARATE ROUTE PAGES ---
 const ContactPage = () => (
-  <section className="px-8 py-12 max-w-4xl mx-auto animate-fadeIn">
-    <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+  <section className="px-6 md:px-8 py-12 max-w-4xl mx-auto animate-fadeIn">
+    <div className="bg-white p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100">
       <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-2">Get in Touch</h2>
       <p className="text-gray-500 text-xs text-center mb-8">Have questions? We are here to help you 24/7.</p>
       <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
@@ -378,8 +440,8 @@ const ContactPage = () => (
 );
 
 const SignupPage = () => (
-  <section className="px-8 py-16 max-w-md mx-auto animate-fadeIn">
-    <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 text-center">
+  <section className="px-6 md:px-8 py-16 max-w-md mx-auto animate-fadeIn">
+    <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 text-center">
       <div className="w-10 h-10 rounded-full bg-[#6355E8] text-white font-bold text-xl flex items-center justify-center mx-auto mb-4">D</div>
       <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Create Account</h2>
       <p className="text-gray-500 text-xs mb-6">Join Doctify for instant healthcare access.</p>
@@ -397,8 +459,8 @@ const SignupPage = () => (
 );
 
 const LoginPage = () => (
-  <section className="px-8 py-16 max-w-md mx-auto animate-fadeIn">
-    <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 text-center">
+  <section className="px-6 md:px-8 py-16 max-w-md mx-auto animate-fadeIn">
+    <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 text-center">
       <div className="w-10 h-10 rounded-full bg-black text-white font-bold text-xl flex items-center justify-center mx-auto mb-4">D</div>
       <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Welcome Back</h2>
       <p className="text-gray-500 text-xs mb-6">Login to manage your medical appointments.</p>
